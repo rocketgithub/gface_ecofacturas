@@ -9,7 +9,7 @@
     'website': 'http://solucionesprisma.com/',
     'depends': ['account'],
     'data': [
-        'account_view.xml',
+        'views/account_view.xml',
     ],
     'demo': [],
     'installable': True
