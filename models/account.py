@@ -93,7 +93,7 @@ class account_invoice(osv.osv):
                 xmls = etree.tostring(stdTWS, xml_declaration=True, encoding="UTF-8")
                 logging.warn(xmls)
 
-                wsdl = 'http://pruebas.ecofactura.com.gt:8080/gface/servlet/ar_car_fac?wsdl'
+                wsdl = "https://gface.ecofactura.com.gt:8443/gface/servlet/ar_car_fac?wsdl"
                 client = zeep.Client(wsdl=wsdl)
 
                 resultado = client.service.Execute(factura.journal_id.cliente_gface, factura.journal_id.usuario_gface, factura.journal_id.nit_emisor_gface, factura.journal_id.numero_establecimiento_gface, factura.journal_id.resolucion_gface, xmls, 1)
