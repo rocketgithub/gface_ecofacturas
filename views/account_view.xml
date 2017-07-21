@@ -24,9 +24,8 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="sequence_id" position="after">
-                        <field name="cliente_gface"/>
-                        <field name="usuario_gface"/>
                         <field name="nit_emisor_gface"/>
+                        <field name="clave_gface"/>
                         <field name="numero_establecimiento_gface"/>
                         <field name="resolucion_gface"/>
                         <field name="tipo_documento_gface"/>

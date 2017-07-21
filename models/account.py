@@ -22,7 +22,7 @@ class account_invoice(osv.osv):
         detalles = []
         subtotal = 0
         for factura in self.browse(cr, uid, ids, context=context):
-            if factura.journal_id.cliente_gface and not factura.firma_gface:
+            if factura.journal_id.clave_gface and not factura.firma_gface:
 
                 stdTWS = etree.Element("stdTWS", xmlns="GFACE_Web")
                 stdTWSCIt = etree.SubElement(stdTWS, "stdTWS.stdTWSCIt")
@@ -58,6 +58,8 @@ class account_invoice(osv.osv):
                 MonCod.text = "GTQ"
                 TrnTasCam = etree.SubElement(stdTWSCIt, "TrnTasCam")
                 TrnTasCam.text = "1"
+                # TrnCampAd01 = etree.SubElement(stdTWSCIt, "TrnCampAd01")
+                TrnPaisCod = etree.SubElement(stdTWSCIt, "TrnPaisCod")
                 TrnUltLinD = etree.SubElement(stdTWSCIt, "TrnUltLinD")
                 TrnUltLinD.text = str(len(factura.invoice_line))
 
@@ -76,7 +78,7 @@ class account_invoice(osv.osv):
                     else:
                         TrnArtCod.text = str(linea.product_id.id)
                     TrnArtNom = etree.SubElement(stdTWSDIt, "TrnArtNom")
-                    TrnArtNom.text = linea.product_id.name
+                    TrnArtNom.text = linea.name
                     TrnCan = etree.SubElement(stdTWSDIt, "TrnCan")
                     TrnCan.text = str(linea.quantity)
                     TrnVUn = etree.SubElement(stdTWSDIt, "TrnVUn")
@@ -86,9 +88,19 @@ class account_invoice(osv.osv):
                     TrnVDes = etree.SubElement(stdTWSDIt, "TrnVDes")
                     TrnVDes.text = "0.00"
                     TrnArtBienSer = etree.SubElement(stdTWSDIt, "TrnArtBienSer")
-                    TrnArtBienSer.text = "0"
+                    if linea.product_id.type == 'product':
+                        TrnArtBienSer.text = "0"
+                    else:
+                        TrnArtBienSer.text = "1"
                     TrnArtExcento = etree.SubElement(stdTWSDIt, "TrnArtExcento")
                     TrnArtExcento.text = "0"
+                    TrnDetCampAd01 = etree.SubElement(stdTWSDIt, "TrnDetCampAd01")
+                    TrnDetCampAd02 = etree.SubElement(stdTWSDIt, "TrnDetCampAd02")
+                    TrnDetCampAd03 = etree.SubElement(stdTWSDIt, "TrnDetCampAd03")
+                    TrnDetCampAd04 = etree.SubElement(stdTWSDIt, "TrnDetCampAd04")
+                    TrnDetCampAd05 = etree.SubElement(stdTWSDIt, "TrnDetCampAd05")
+
+                stdTWSIA = etree.SubElement(stdTWSCIt, "stdTWSIA")
 
                 xmls = etree.tostring(stdTWS, xml_declaration=True, encoding="UTF-8")
                 logging.warn(xmls)
@@ -96,7 +108,7 @@ class account_invoice(osv.osv):
                 wsdl = "https://gface.ecofactura.com.gt:8443/gface/servlet/ar_car_fac?wsdl"
                 client = zeep.Client(wsdl=wsdl)
 
-                resultado = client.service.Execute(factura.journal_id.cliente_gface, factura.journal_id.usuario_gface, factura.journal_id.nit_emisor_gface, factura.journal_id.numero_establecimiento_gface, factura.journal_id.resolucion_gface, xmls, 1)
+                resultado = client.service.Execute(factura.journal_id.nit_emisor_gface, factura.journal_id.clave_gface, factura.journal_id.nit_emisor_gface, factura.journal_id.numero_establecimiento_gface, factura.journal_id.resolucion_gface, xmls, 1)
                 # logging.warn(resultado)
 
                 if resultado.Dte:
@@ -120,9 +132,8 @@ class account_journal(osv.osv):
     _inherit = "account.journal"
 
     _columns = {
-        'cliente_gface': fields.char('Usuario GFACE'),
-        'usuario_gface': fields.char('Clave GFACE'),
         'nit_emisor_gface': fields.char('NIT Emisor GFACE'),
+        'clave_gface': fields.char('Clave GFACE'),
         'numero_establecimiento_gface': fields.char('Numero de Establecimiento GFACE'),
         'resolucion_gface': fields.char('Numero Resolucion GFACE'),
         'tipo_documento_gface': fields.selection((('FACE-63', 'FACE-63'),), 'Tipo de Documento GFACE'),
