@@ -2,10 +2,10 @@
 
 from odoo import models, fields, api, _
 from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError
 
 from datetime import datetime
 from lxml import etree
-from io import StringIO
 import base64
 import logging
 import zeep
@@ -20,7 +20,7 @@ class AccountInvoice(models.Model):
         detalles = []
         subtotal = 0
         for factura in self:
-            if factura.journal_id.requestor_gface and not factura.firma_gface:
+            if factura.journal_id.nit_emisor_gface and not factura.firma_gface:
 
                 stdTWS = etree.Element("stdTWS", xmlns="GFACE_Web")
                 stdTWSCIt = etree.SubElement(stdTWS, "stdTWS.stdTWSCIt")
@@ -59,12 +59,12 @@ class AccountInvoice(models.Model):
                 # TrnCampAd01 = etree.SubElement(stdTWSCIt, "TrnCampAd01")
                 TrnPaisCod = etree.SubElement(stdTWSCIt, "TrnPaisCod")
                 TrnUltLinD = etree.SubElement(stdTWSCIt, "TrnUltLinD")
-                TrnUltLinD.text = str(len(factura.invoice_line))
+                TrnUltLinD.text = str(len(factura.invoice_line_ids))
 
                 stdTWSD = etree.SubElement(stdTWSCIt, "stdTWSD")
 
                 num = 1
-                for linea in factura.invoice_line:
+                for linea in factura.invoice_line_ids:
                     stdTWSDIt = etree.SubElement(stdTWSD, "stdTWS.stdTWSCIt.stdTWSDIt")
 
                     TrnLiNum = etree.SubElement(stdTWSDIt, "TrnLiNum")
@@ -107,12 +107,13 @@ class AccountInvoice(models.Model):
                 client = zeep.Client(wsdl=wsdl)
 
                 resultado = client.service.Execute(factura.journal_id.nit_emisor_gface, factura.journal_id.clave_gface, factura.journal_id.nit_emisor_gface, factura.journal_id.numero_establecimiento_gface, factura.journal_id.resolucion_gface, xmls, 1)
-                # logging.warn(resultado)
+                logging.warn(resultado)
 
                 if resultado.Dte:
-                    archivos = etree.parse(StringIO(resultado.Dte))
+                    xml = bytes(bytearray(resultado.Dte, encoding='utf-8'))
+                    archivos = etree.XML(xml)
                     dte = archivos.xpath("/DTE/CFDArchivo[@Tipo='XML']")
-                    cfd = etree.parse(StringIO(base64.b64decode(dte[0].get("Archivo"))))
+                    cfd = etree.fromstring(base64.b64decode(dte[0].get("Archivo")))
 
                     firma = cfd.xpath("//*[local-name()='SignatureValue']")[0].text
                     numero = cfd.xpath("//dcae")[0].get("id")
@@ -124,7 +125,7 @@ class AccountInvoice(models.Model):
                     factura.firma_gface = firma
                     factura.name = numero
                 else:
-                    raise UserError(resultado['Response']['Description'])
+                    raise UserError(resultado)
 
         return super(AccountInvoice,self).invoice_validate()
 
