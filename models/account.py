@@ -1,28 +1,26 @@
 # -*- encoding: utf-8 -*-
 
-from openerp.osv import osv, fields
+from odoo import models, fields, api, _
+from odoo.addons import decimal_precision as dp
 
 from datetime import datetime
 from lxml import etree
-from StringIO import StringIO
+from io import StringIO
 import base64
 import logging
 import zeep
 
-class account_invoice(osv.osv):
+class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
-    _columns = {
-        'firma_gface': fields.char('Firma GFACE', copy=False),
-        'pdf_gface': fields.binary('PDF GFACE', copy=False),
-    }
+    firma_gface = fields.Char('Firma GFACE', copy=False)
+    pdf_gface = fields.Binary('PDF GFACE', copy=False)
 
-    def invoice_validate(self, cr, uid, ids, context=None):
-
+    def invoice_validate(self):
         detalles = []
         subtotal = 0
-        for factura in self.browse(cr, uid, ids, context=context):
-            if factura.journal_id.clave_gface and not factura.firma_gface:
+        for factura in self:
+            if factura.journal_id.requestor_gface and not factura.firma_gface:
 
                 stdTWS = etree.Element("stdTWS", xmlns="GFACE_Web")
                 stdTWSCIt = etree.SubElement(stdTWS, "stdTWS.stdTWSCIt")
@@ -122,19 +120,19 @@ class account_invoice(osv.osv):
 
                     pdf = archivos.xpath("/DTE/CFDArchivo[@Tipo='PDF']")[0].get("Archivo")
 
-                    self.write(cr, uid, ids, { "firma_gface": firma, 'name': numero, 'pdf_gface': pdf })
+                    factura.pdf_gface = pdf
+                    factura.firma_gface = firma
+                    factura.name = numero
                 else:
-                    raise osv.except_osv('Error', resultado.Respuesta)
+                    raise UserError(resultado['Response']['Description'])
 
-        return super(account_invoice,self).invoice_validate(cr, uid, ids, context)
+        return super(AccountInvoice,self).invoice_validate()
 
-class account_journal(osv.osv):
+class AccountJournal(models.Model):
     _inherit = "account.journal"
 
-    _columns = {
-        'nit_emisor_gface': fields.char('NIT Emisor GFACE'),
-        'clave_gface': fields.char('Clave GFACE'),
-        'numero_establecimiento_gface': fields.char('Numero de Establecimiento GFACE'),
-        'resolucion_gface': fields.char('Numero Resolucion GFACE'),
-        'tipo_documento_gface': fields.selection((('FACE-63', 'FACE-63'),), 'Tipo de Documento GFACE'),
-    }
+    nit_emisor_gface = fields.Char('NIT Emisor GFACE', copy=False)
+    clave_gface = fields.Char('Clave GFACE', copy=False)
+    numero_establecimiento_gface = fields.Char('Numero de Establecimiento GFACE', copy=False)
+    resolucion_gface = fields.Char('Numero Resolucion GFACE', copy=False)
+    tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63')], 'Tipo de Documento GFACE', copy=False)
