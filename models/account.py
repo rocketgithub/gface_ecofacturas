@@ -71,7 +71,9 @@ class AccountInvoice(models.Model):
                     TrnLiNum.text = str(num)
                     num += 1
                     TrnArtCod = etree.SubElement(stdTWSDIt, "TrnArtCod")
-                    if linea.product_id.default_code:
+                    if linea.product_id.barcode:
+                        TrnArtCod.text = linea.product_id.barcode
+                    elif linea.product_id.default_code:
                         TrnArtCod.text = linea.product_id.default_code
                     else:
                         TrnArtCod.text = str(linea.product_id.id)
