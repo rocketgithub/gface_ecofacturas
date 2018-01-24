@@ -34,12 +34,12 @@ class AccountInvoice(models.Model):
                 TrnFec = etree.SubElement(stdTWSCIt, "TrnFec")
                 TrnFec.text = factura.date_invoice
                 TrnBenConNIT = etree.SubElement(stdTWSCIt, "TrnBenConNIT")
-                TrnBenConNIT.text = factura.partner_id.vat
+                TrnBenConNIT.text = factura.partner_id.vat or ''
                 TrnEFACECliCod = etree.SubElement(stdTWSCIt, "TrnEFACECliCod")
                 TrnEFACECliNom = etree.SubElement(stdTWSCIt, "TrnEFACECliNom")
                 TrnEFACECliNom.text = factura.partner_id.name
                 TrnEFACECliDir = etree.SubElement(stdTWSCIt, "TrnEFACECliDir")
-                TrnEFACECliDir.text = factura.partner_id.street
+                TrnEFACECliDir.text = factura.partner_id.street or ''
                 TrnObs = etree.SubElement(stdTWSCIt, "TrnObs")
                 TrnEMail = etree.SubElement(stdTWSCIt, "TrnEMail")
                 if factura.partner_id.email:
@@ -56,7 +56,10 @@ class AccountInvoice(models.Model):
                 MonCod.text = "GTQ"
                 TrnTasCam = etree.SubElement(stdTWSCIt, "TrnTasCam")
                 TrnTasCam.text = "1"
-                # TrnCampAd01 = etree.SubElement(stdTWSCIt, "TrnCampAd01")
+                TrnCampAd01 = etree.SubElement(stdTWSCIt, "TrnCampAd01")
+                TrnCampAd01.text = factura.user_id.partner_id.name
+                TrnCampAd02 = etree.SubElement(stdTWSCIt, "TrnCampAd02")
+                TrnCampAd02.text = factura.origin or ''
                 TrnPaisCod = etree.SubElement(stdTWSCIt, "TrnPaisCod")
                 TrnUltLinD = etree.SubElement(stdTWSCIt, "TrnUltLinD")
                 TrnUltLinD.text = str(len(factura.invoice_line_ids))
@@ -103,7 +106,6 @@ class AccountInvoice(models.Model):
                 stdTWSIA = etree.SubElement(stdTWSCIt, "stdTWSIA")
 
                 xmls = etree.tostring(stdTWS, xml_declaration=True, encoding="UTF-8")
-                logging.warn(xmls)
 
                 wsdl = "https://gface.ecofactura.com.gt:8443/gface/servlet/ar_car_fac?wsdl"
                 client = zeep.Client(wsdl=wsdl)
