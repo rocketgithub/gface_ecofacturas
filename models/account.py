@@ -137,7 +137,7 @@ class AccountJournal(models.Model):
     _inherit = "account.journal"
 
     nit_emisor_gface = fields.Char('NIT Emisor GFACE', copy=False)
-    clave_gface = fields.Char('Clave GFACE', copy=False)
+    clave_gface = fields.Char('Usuario GFACE', copy=False)
     numero_establecimiento_gface = fields.Char('Numero de Establecimiento GFACE', copy=False)
     resolucion_gface = fields.Char('Numero Resolucion GFACE', copy=False)
     tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63')], 'Tipo de Documento GFACE', copy=False)
