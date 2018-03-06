@@ -30,7 +30,7 @@ class AccountInvoice(models.Model):
                 TipTrnCod = etree.SubElement(stdTWSCIt, "TipTrnCod")
                 TipTrnCod.text = factura.journal_id.tipo_documento_gface
                 TrnNum = etree.SubElement(stdTWSCIt, "TrnNum")
-                TrnNum.text = str(factura.id)
+                TrnNum.text = "odoo-"+str(factura.id)
                 TrnFec = etree.SubElement(stdTWSCIt, "TrnFec")
                 TrnFec.text = factura.date_invoice
                 TrnBenConNIT = etree.SubElement(stdTWSCIt, "TrnBenConNIT")
@@ -113,7 +113,7 @@ class AccountInvoice(models.Model):
                 resultado = client.service.Execute(factura.journal_id.nit_emisor_gface, factura.journal_id.clave_gface, factura.journal_id.nit_emisor_gface, factura.journal_id.numero_establecimiento_gface, factura.journal_id.resolucion_gface, xmls, 1)
                 logging.warn(resultado)
 
-                if resultado.Dte:
+                if resultado.Dte.strip():
                     xml = bytes(bytearray(resultado.Dte, encoding='utf-8'))
                     archivos = etree.XML(xml)
                     dte = archivos.xpath("/DTE/CFDArchivo[@Tipo='XML']")
