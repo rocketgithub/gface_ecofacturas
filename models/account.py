@@ -117,19 +117,22 @@ class AccountInvoice(models.Model):
                     xml = bytes(bytearray(resultado.Dte, encoding='utf-8'))
                     archivos = etree.XML(xml)
                     dte = archivos.xpath("/DTE/CFDArchivo[@Tipo='XML']")
-                    cfd = etree.fromstring(base64.b64decode(dte[0].get("Archivo")))
+                    if dte[0].get("Archivo").strip():
+                        cfd = etree.fromstring(base64.b64decode(dte[0].get("Archivo")))
 
-                    firma = cfd.xpath("//*[local-name()='SignatureValue']")[0].text
-                    numero = cfd.xpath("//dcae")[0].get("id")
-                    logging.warn(numero)
+                        firma = cfd.xpath("//*[local-name()='SignatureValue']")[0].text
+                        numero = cfd.xpath("//dcae")[0].get("id")
+                        logging.warn(numero)
 
-                    pdf = archivos.xpath("/DTE/CFDArchivo[@Tipo='PDF']")[0].get("Archivo")
+                        pdf = archivos.xpath("/DTE/CFDArchivo[@Tipo='PDF']")[0].get("Archivo")
 
-                    factura.pdf_gface = pdf
-                    factura.firma_gface = firma
-                    factura.name = numero
+                        factura.pdf_gface = pdf
+                        factura.firma_gface = firma
+                        factura.name = numero
+                    else:
+                        raise UserError(resultado.Respuesta)
                 else:
-                    raise UserError(resultado)
+                    raise UserError(resultado.Respuesta)
 
         return super(AccountInvoice,self).invoice_validate()
 
