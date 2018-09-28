@@ -143,4 +143,4 @@ class AccountJournal(models.Model):
     clave_gface = fields.Char('Usuario GFACE', copy=False)
     numero_establecimiento_gface = fields.Char('Numero de Establecimiento GFACE', copy=False)
     resolucion_gface = fields.Char('Numero Resolucion GFACE', copy=False)
-    tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63')], 'Tipo de Documento GFACE', copy=False)
+    tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63'), ('FACE-66', 'FACE-66')], 'Tipo de Documento GFACE', copy=False)
