@@ -136,5 +136,5 @@ class account_journal(osv.osv):
         'clave_gface': fields.char('Clave GFACE'),
         'numero_establecimiento_gface': fields.char('Numero de Establecimiento GFACE'),
         'resolucion_gface': fields.char('Numero Resolucion GFACE'),
-        'tipo_documento_gface': fields.selection((('FACE-63', 'FACE-63'),), 'Tipo de Documento GFACE'),
+        'tipo_documento_gface': fields.selection((('FACE-63', 'FACE-63'),('FACE-66', 'FACE-66')), 'Tipo de Documento GFACE'),
     }
