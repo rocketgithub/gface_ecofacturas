@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="comment" position="after">
-                        <label string="Firma GFACE"/>
+                        <label for="firma_gface" string="Firma GFACE"/>
                         <field name="firma_gface"/>
                         <field name="pdf_gface"/>
                     </field>
