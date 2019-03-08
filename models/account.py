@@ -32,7 +32,7 @@ class AccountInvoice(models.Model):
                 TrnNum = etree.SubElement(stdTWSCIt, "TrnNum")
                 TrnNum.text = str(10000+factura.id)
                 TrnFec = etree.SubElement(stdTWSCIt, "TrnFec")
-                TrnFec.text = factura.date_invoice
+                TrnFec.text = str(factura.date_invoice)
                 TrnBenConNIT = etree.SubElement(stdTWSCIt, "TrnBenConNIT")
                 TrnBenConNIT.text = factura.partner_id.vat or ''
                 TrnEFACECliCod = etree.SubElement(stdTWSCIt, "TrnEFACECliCod")
