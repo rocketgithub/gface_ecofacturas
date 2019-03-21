@@ -23,7 +23,7 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <field name="group_invoice_lines" position="after">
+                    <field name="sequence_id" position="after">
                         <field name="nit_emisor_gface"/>
                         <field name="clave_gface"/>
                         <field name="numero_establecimiento_gface"/>
