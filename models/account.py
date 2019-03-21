@@ -31,7 +31,7 @@ class AccountInvoice(models.Model):
                 TrnNum = etree.SubElement(stdTWSCIt, "TrnNum")
                 TrnNum.text = str(10000+factura.id)
                 TrnFec = etree.SubElement(stdTWSCIt, "TrnFec")
-                TrnFec.text = factura.date_invoice
+                TrnFec.text = str(factura.date_invoice)
                 TrnBenConNIT = etree.SubElement(stdTWSCIt, "TrnBenConNIT")
                 TrnBenConNIT.text = factura.partner_id.vat or ''
                 TrnEFACECliCod = etree.SubElement(stdTWSCIt, "TrnEFACECliCod")
@@ -142,4 +142,4 @@ class AccountJournal(models.Model):
     clave_gface = fields.Char('Usuario GFACE', copy=False)
     numero_establecimiento_gface = fields.Char('Numero de Establecimiento GFACE', copy=False)
     resolucion_gface = fields.Char('Numero Resolucion GFACE', copy=False)
-    tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63')], 'Tipo de Documento GFACE', copy=False)
+    tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63'), ('FACE-66', 'FACE-66')], 'Tipo de Documento GFACE', copy=False)
