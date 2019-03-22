@@ -10,8 +10,7 @@
                 <data>
                     <field name="comment" position="after">
                         <group>
-                            <label for="firma_gface" string="Firma GFACE"/>
-                            <field name="firma_gface"/>
+                            <label for="firma_gface"/>
                             <field name="pdf_gface"/>
                             <field name="factura_original_id"/>
                         </group>
