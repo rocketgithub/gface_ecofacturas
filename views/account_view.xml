@@ -12,6 +12,7 @@
                         <label for="firma_gface" string="Firma GFACE"/>
                         <field name="firma_gface"/>
                         <field name="pdf_gface"/>
+                        <field name="factura_original_id"/>
                     </field>
                 </data>
             </field>

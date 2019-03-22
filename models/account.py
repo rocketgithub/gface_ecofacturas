@@ -14,6 +14,7 @@ class AccountInvoice(models.Model):
 
     firma_gface = fields.Char('Firma GFACE', copy=False)
     pdf_gface = fields.Binary('PDF GFACE', copy=False)
+    factura_original_id = fields.Many2one('account.invoice', string="Factura original")
 
     def invoice_validate(self):
         detalles = []
@@ -44,13 +45,27 @@ class AccountInvoice(models.Model):
                 if factura.partner_id.email:
                     TrnEMail.text = factura.partner_id.email
                 TDFEPAutResNum = etree.SubElement(stdTWSCIt, "TDFEPAutResNum")
+                if factura.factura_original_id:
+                    TDFEPAutResNum.text = factura.factura_original_id.journal_id.resolucion_gface
                 TDFEPTipTrnCod = etree.SubElement(stdTWSCIt, "TDFEPTipTrnCod")
+                if factura.factura_original_id:
+                    TDFEPTipTrnCod.text = factura.factura_original_id.journal_id.tipo_documento_gface
                 TDFEPSerie = etree.SubElement(stdTWSCIt, "TDFEPSerie")
+                if factura.factura_original_id:
+                    TDFEPSerie.text = factura.factura_original_id.name.split("-")[2]
                 TDFEPDispElec = etree.SubElement(stdTWSCIt, "TDFEPDispElec")
+                if factura.factura_original_id:
+                    TDFEPDispElec.text = factura.factura_original_id.name.split("-")[3]
                 TDFEPYear = etree.SubElement(stdTWSCIt, "TDFEPYear")
-                TDFEPYear.text = "0"
+                if factura.factura_original_id:
+                    TDFEPYear.text = factura.factura_original_id.date_invoice.split("-")[0]
+                else:
+                    TDFEPYear.text = "0"
                 TDFEPNum = etree.SubElement(stdTWSCIt, "TDFEPNum")
-                TDFEPNum.text = "0"
+                if factura.factura_original_id:
+                    TDFEPNum.text = factura.factura.factura_original_id.name.split("-")[4]
+                else:
+                    TDFEPNum.text = "0"
                 MonCod = etree.SubElement(stdTWSCIt, "MonCod")
                 MonCod.text = "GTQ"
                 TrnTasCam = etree.SubElement(stdTWSCIt, "TrnTasCam")
