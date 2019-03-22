@@ -63,7 +63,7 @@ class AccountInvoice(models.Model):
                     TDFEPYear.text = "0"
                 TDFEPNum = etree.SubElement(stdTWSCIt, "TDFEPNum")
                 if factura.factura_original_id:
-                    TDFEPNum.text = int(factura.factura_original_id.name.split("-")[4][2:])
+                    TDFEPNum.text = str(int(factura.factura_original_id.name.split("-")[4][2:]))
                 else:
                     TDFEPNum.text = "0"
                 MonCod = etree.SubElement(stdTWSCIt, "MonCod")
