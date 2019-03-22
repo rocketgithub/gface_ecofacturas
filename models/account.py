@@ -120,6 +120,7 @@ class AccountInvoice(models.Model):
                 stdTWSIA = etree.SubElement(stdTWSCIt, "stdTWSIA")
 
                 xmls = etree.tostring(stdTWS, xml_declaration=True, encoding="UTF-8")
+                logging.warn(xmls)
 
                 wsdl = "https://gface.ecofactura.com.gt:8443/gface/servlet/ar_car_fac?wsdl"
                 client = zeep.Client(wsdl=wsdl)
