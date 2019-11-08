@@ -123,6 +123,8 @@ class AccountInvoice(models.Model):
                 logging.warn(xmls)
 
                 wsdl = "https://gface.ecofactura.com.gt:8443/gface/servlet/ar_car_fac?wsdl"
+                if factura.journal_id.pruebas_gface:
+                    wsdl = "http://pruebas.ecofactura.com.gt:8080/gface/servlet/ar_car_fac?wsdl"
                 client = zeep.Client(wsdl=wsdl)
 
                 resultado = client.service.Execute(factura.journal_id.nit_emisor_gface, factura.journal_id.clave_gface, factura.journal_id.nit_emisor_gface, factura.journal_id.numero_establecimiento_gface, factura.journal_id.resolucion_gface, xmls, 1)
@@ -159,3 +161,4 @@ class AccountJournal(models.Model):
     numero_establecimiento_gface = fields.Char('Numero de Establecimiento GFACE', copy=False)
     resolucion_gface = fields.Char('Numero Resolucion GFACE', copy=False)
     tipo_documento_gface = fields.Selection([('FACE-63', 'FACE-63'), ('FACE-66', 'FACE-66'), ('FACE-74', 'FACE-74'), ('NCE-64', 'NCE-64'), ('NDE-65', 'NDE-65')], 'Tipo de Documento GFACE', copy=False)
+    pruebas_gface = fields.Boolean('Pruebas GFACE', copy=False)
