@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <record model="ir.ui.view" id="invoice_form_gface_ecofacturas">
-            <field name="name">account.invoice.form.gface_ecofacturas</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="name">account.move.form.gface_ecofacturas</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="l10n_gt_extra.l10n_gt_view_move_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <field name="comment" position="after">
-                        <label for="firma_gface" string="Firma GFACE"/>
+                    <field name="tipo_gasto" position="after">
                         <field name="firma_gface"/>
                         <field name="pdf_gface"/>
                     </field>
@@ -17,22 +16,5 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="journal_form_gface_ecofacturas">
-            <field name="name">account.journal.form.gface_ecofacturas</field>
-            <field name="model">account.journal</field>
-            <field name="inherit_id" ref="account.view_account_journal_form"/>
-            <field name="arch" type="xml">
-                <data>
-                    <field name="sequence_id" position="after">
-                        <field name="nit_emisor_gface"/>
-                        <field name="clave_gface"/>
-                        <field name="numero_establecimiento_gface"/>
-                        <field name="resolucion_gface"/>
-                        <field name="tipo_documento_gface"/>
-                    </field>
-                </data>
-            </field>
-        </record>
-
     </data>
-</openerp>
+</odoo>
